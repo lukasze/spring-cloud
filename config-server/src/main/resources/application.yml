@@ -1,0 +1,32 @@
+# TODO 8 poniższa wartość definiuje repo git, z którego
+
+# serwer będzie pobierał informacje.
+# Podaliśmy już przykładowe uri:
+# http://config-server:8888/cookie-service/default
+# Gdy cookie-service będzie podnosił kontekst, połączy się na powyższe uri
+# z serwerem, a ten wyszuka w repozytorium git, pliku o nazwie
+# cookie-service.properties lub cookie-service.yml
+# Dane profil domyślny / konkretny są serwowane analogicnzie jak w przypadku
+# aplikacji Spring Boot:
+# cookie-service.properties / cookie-service.yml - profil domyślny
+# cookie-service-myProfile.properties / cookie-service-myProfile.yml - myProfile
+
+# Poszczególne profile można także dodawać w formacie yml. w pliku cookie-service.yml
+# Przykład pod adresem https://github.com/lukasze/fortune-cookie.git
+# Możemy definiować repo git lokalnie lub zdalnie. Dla oszczędności czasu skorzystaj
+# z konfiguracji zdalnej i już gotowych plików.
+spring:
+  cloud:
+    config:
+      server:
+        git:
+#          uri: file:///${user.home}/localrepo
+#        gotowe, zdlane repo
+          uri: https://github.com/lukasze/fortune-cookie.git
+# 8888 to domyślna konwencja dla Spring Cloud Config Server, ale nie
+# dla aplikacji Spring Boot (8080), dlatego ustawiamy wpisem
+server:
+  port: 8888
+
+# TODO 9, żeby nasz serwer zadziałał, potrzebujemy zależności i adnotacji w klasie głównej
+# Zajrzyj do plików i je podejrzyj.

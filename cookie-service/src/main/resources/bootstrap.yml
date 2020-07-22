@@ -1,0 +1,27 @@
+#TODO 5 poniższe dwie wartości konfigurują
+
+# 1 nazwę aplikacji
+
+# pod tą nazwą aplikacja będzie widniała w Eurece,
+# Jeśli inny serwis chciałby się połączyć z cookie-service
+# używając feing  - FeignClient(name = "COOKIE-SERVICE"
+spring:
+  application:
+    name: cookie-service
+#  2 jak odszukać serwer konfiguracyjny
+#  (dlatego  dodaliśmy wpis do hostów)
+#  Domyślna wartość to localhost:8888
+  cloud:
+    config:
+      uri: http://config-server:8888
+# Zwróć uwagę, że ten pli nie nazywa się application.yml
+# tylko boostrap.yml - różnica w nazwie jest nieprzypadkowa.
+# Spring Cloud Config Client będzie szukał tego pliku, żeby
+# mieć dane do połączenia z serwerem konfiguracyjnym
+
+# spring.cloud.config.uri - gdzie jest serwe
+# spring.application.name - dla jakiego serwisu
+# serwer ma udostępnić konfiguracje.
+
+# Przykład uri na serwerze konfiguracyjnym dla cookie-service, profil default:
+# http://config-server:8888/cookie-service/default

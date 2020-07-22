@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.4.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>workshop.sc</groupId>
+	<artifactId>fortune-cookie</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<name>fortune-aggregator</name>
+	<description>Project for building the fortune services</description>
+<!--TODO 12 pom projektu agregującego nasze serwisy
+	response - używany przez cookie-service, activity-service i decision-service do
+	zwracania informacji dla klientów.
+
+	config-server - Spring Cloud Config Server
+	eureka-server - Spring CLoud Discovery Service (eureka)
+
+	cookie-service agreguje informacje z activity-service i decision-service
+
+-->
+	<modules>
+	  <module>response</module>
+	  <module>config-server</module>
+	  <module>eureka-server</module>
+	  <module>activity-service</module>
+	  <module>decision-service</module>
+	  <module>cookie-service</module>
+  	</modules>
+
+
+	<properties>
+		<image>${project.name}</image>
+	</properties>
+
+<!--TODO 13 konfiguracja pluginu jib - budowanie obrazów Docker z naszych komponentów
+	(wszystkie, oprócz Response)
+-->
+	<build>
+		<finalName>service</finalName>
+		<!-- Defines plugins that are used in the modules. -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.google.cloud.tools</groupId>
+					<artifactId>jib-maven-plugin</artifactId>
+					<version>2.0.0</version>
+					<configuration>
+<!--						Obraz bazowy
+							java + netcat
+-->
+						<from>
+							<image>dockerstore/java-11-with-netcat</image>
+						</from>
+						<container>
+<!--							Jaka komenda będzie wywołana, po wystartowaniu kontenera-->
+							<entrypoint>
+								<shell>/bin/bash</shell>
+								<option>-c</option>
+								<arg>chmod +x /entrypoint.sh &amp;&amp; sync &amp;&amp; /entrypoint.sh</arg>
+							</entrypoint>
+							<environment>
+								<SPRING_OUTPUT_ANSI_ENABLED>ALWAYS</SPRING_OUTPUT_ANSI_ENABLED>
+							</environment>
+							<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+						</container>
+						<extraDirectories>
+<!--							Skąd kopiować skrypty startowe, podczas budowania obrazu
+								Przejdźmy do kolejnego TODOsa żeby zapoznać sięze skrupte,
+-->
+							<paths>${project.basedir}/src/main/service-scripts</paths>
+						</extraDirectories>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

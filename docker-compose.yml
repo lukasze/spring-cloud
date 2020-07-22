@@ -1,0 +1,46 @@
+# TODO 14 cała aplikacja w docker-compose
+# Żeby uruchomić aplikację, potrzebujemy
+# 1.zbudować wszystkie komponenty, oraz zbudować obrazy Docker:
+# ./mvnw package com.google.cloud.tools:jib-maven-plugin:dockerBuild
+# 2. użyć docker-compose, dla uruchomienia całej aplikacji:
+#	docker-compose up
+
+# nazwy serwisów (config-server, eureka-peer1 etc.) będą domyślnymi nazwami domenowymi.
+# Dlatego, uruchamiając lokalnie dodaliśmy je do pliku host, żeby używać tej samej konfiguracji
+# bez względu na to, czy testujemy lokalnie, czy przy użyciu docker-compose.
+version: "3"
+services:
+  config-server:
+    image: config-server
+    ports:
+      - "8888:8888"
+  eureka-peer1:
+    image: eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=peer1
+      - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
+    ports:
+      - "8761:8761"
+  eureka-peer2:
+    image: eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=peer2
+      - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
+    ports:
+      - "8762:8762"
+  activity-service:
+    image: activity-service
+    environment:
+     - SPRING_PROFILES_ACTIVE=lazy
+    ports:
+      - "8010:8010"
+  decision-service:
+    image: decision-service
+    environment:
+     - SPRING_PROFILES_ACTIVE=polite
+    ports:
+      - "8000:8000"
+  cookie-service:
+    image: cookie-service
+    ports:
+      - "8080:8080"

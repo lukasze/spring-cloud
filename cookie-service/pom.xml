@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>workshop.sc</groupId>
+        <artifactId>fortune-cookie</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>cookie-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>cookie-service</name>
+
+    <properties>
+        <java.version>11</java.version>
+        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+    </properties>
+<!--TODO 6  przejrzyjmy dodane zależności,
+     to kluczowa sprawa dla Spring Boot i Spring Cloud:
+     dodanie zależności także konfiguruje aplikację-->
+    <dependencies>
+        <dependency>
+<!--           cookie-service wystawia REST'owy endpoint-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+<!--            cookie-service będzie rejestrował się w Eurece-->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+<!--            cookie-service, podczas startu, będzie zaciągał konfiguracje
+                z http://config-server
+ -->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+<!--            Awaryjny mechanizm - gdy cookie service nie będzie mógł się połączyć
+                z activity-service lub decision-service, użyje zaimplementowanych fallback'ów
+-->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
+        <dependency>
+<!--            Tworzenie klienta REST w locie (analogicznie do spring-data-jpa-->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+<!--            Load balancer po stronie klienta-->
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+        </dependency>
+        <dependency>
+<!--            Endpointy cookie-service, activity-service, decision-service
+                zwracają onbiekt Response w formacie JSON.
+
+                Moglibyśmy zwracać String'a, ale symulujemy poważną aplikację,
+                któ®a zwraca poważny obiekt : ).
+-->
+            <groupId>workshop.sc.model</groupId>
+            <artifactId>response</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
